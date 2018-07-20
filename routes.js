@@ -1,19 +1,33 @@
 var express = require('express');
 
 var router = express.Router();
+var Student = require('./student.js');
 
 router.get('/', function(req, res){
-	res.send('hello world')
+	Student.find().then(resp => {
+		res.send(resp);
+	});
 });
 
-router.get('/hello', function(req, res){
-	res.send('hello')
-})
+router.get('/:rollnum', function(req, res){
+	var rollnum = req.params.rollnum;
 
-router.get('/:id', function(req, res){
-	var id = req.params;
+	Student.find({'rollnum' : rollnum}).then(data => {
+		res.send(data);
+	});
+});
+
+router.post('/:name/:rollnum/:mobile', function(req, res){
 	console.log(req.params);
-	res.send('hello world'+req.params.id)
+	// res.send('success')
+	var sample = Student({
+		name: req.params.name,
+		rollnum: req.params.rollnum,
+		mobile: req.params.mobile
+	});
+	sample.save().then(r => {
+		res.send('success')
+	})
 });
 
 module.exports = router;
